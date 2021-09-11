@@ -20,12 +20,14 @@ class NetworkRequest {
   Map<String, String> headers;
   final List<int> listBody;
   final String plainBody;
+  final bool formData;
 
   NetworkRequest(this.type, this.address,
       {@required this.client,
       this.body,
       this.plainBody,
       this.listBody,
+      this.formData,
       this.headers});
 
   Future<http.Response> getResult() async {
@@ -44,6 +46,14 @@ class NetworkRequest {
     try {
       switch (type) {
         case RequestType.post:
+          if(formData){
+            var _apiClient = Uri.parse(address);
+            var request = new http.MultipartRequest("POST", _apiClient);
+            body.forEach((key, value) {request.fields[key] = value;});
+            var a = await request.send();
+            response = await http.Response.fromStream(a);
+            break;
+          }
           response = await client.post(
             address,
             headers: headers,
@@ -61,7 +71,6 @@ class NetworkRequest {
           response = await client.delete(address, headers: headers);
           break;
       }
-      print('RESULT: ${response.body}');
       if (response.statusCode != STATUS_OK) {
         throw HttpRequestException();
       }

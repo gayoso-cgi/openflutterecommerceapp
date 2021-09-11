@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openflutterecommerce/config/theme.dart';
 import 'package:openflutterecommerce/data/model/cart_item.dart';
 import 'package:openflutterecommerce/presentation/features/cart/views/selected_attribute_view.dart';
+
+import '../widgets.dart';
 
 class OpenFlutterCartTile extends StatefulWidget {
   final CartItem item;
@@ -50,8 +53,8 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                     width: 104,
                     child: widget.item.product.mainImage.isLocal
                         ? Image.asset(widget.item.product.mainImage.address)
-                        : Image.network(
-                            widget.item.product.mainImage.address)),
+                        : Image.network(widget.item.product.mainImage.address)
+                ),
                 Container(
                     padding: EdgeInsets.only(left: AppSizes.sidePadding),
                     width: width - 134,
@@ -62,12 +65,36 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 Container(
+                                  margin: EdgeInsets.only(top: 8),
                                   width: width - 173,
-                                  child: Text(widget.item.product.title,
-                                      style: _theme.textTheme.display1
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: _theme.primaryColor)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(widget.item.product.title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: _theme.textTheme.display1
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: _theme.primaryColor)),
+                                      SizedBox(height: 8,),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(text: 'color '),
+                                            TextSpan(
+                                              text: 'Bold',
+                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            TextSpan(text: ' Size'),
+                                            TextSpan(text: ' ${widget.item.product.subTitle}'
+                                            ,style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 !widget.orderComplete
                                     ? InkWell(
@@ -183,11 +210,25 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                               width: width - 280,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                  '\$' +
-                                      (widget.item.price).toStringAsFixed(0),
-                                  style: _theme.textTheme.display1),
+                                      (widget.item.price).toStringAsFixed(0)+' ${widget.item.product.shortDescription}',
+                                  maxLines: 2,
+                                  style: _theme.textTheme.display1
+                                      .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: _theme.primaryColor)),
                             )
-                          ])
+                          ]),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 8, top: 20),
+                            child: Text(
+                                widget.item.product.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: _theme.textTheme.bodyText1
+                                    .copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: _theme.primaryColor.withOpacity(0.75))),
+                          )
                         ]))
               ],
             ),

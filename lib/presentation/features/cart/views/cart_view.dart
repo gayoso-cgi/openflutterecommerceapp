@@ -7,11 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openflutterecommerce/config/routes.dart';
 import 'package:openflutterecommerce/config/theme.dart';
 import 'package:openflutterecommerce/data/model/cart_item.dart';
+import 'package:openflutterecommerce/data/model/part_time_data_model/part_time_model_task_one.dart';
 import 'package:openflutterecommerce/data/model/product.dart';
 import 'package:openflutterecommerce/data/model/promo.dart';
 import 'package:openflutterecommerce/presentation/widgets/data_driven/cart_tile.dart';
 import 'package:openflutterecommerce/presentation/widgets/data_driven/promo_tile.dart';
 import 'package:openflutterecommerce/presentation/widgets/independent/bottom_popup.dart';
+import 'package:openflutterecommerce/presentation/widgets/independent/loading_view.dart';
 import 'package:openflutterecommerce/presentation/widgets/independent/summary_line.dart';
 import 'package:openflutterecommerce/presentation/widgets/widgets.dart';
 
@@ -52,10 +54,10 @@ class _CartViewState extends State<CartView> {
     return BlocListener<CartBloc, CartState>(listener: (context, state) {
       if (state is CartErrorState) {
         return Container(
-          padding: EdgeInsets.all(AppSizes.sidePadding),
-          child: Text('An error occured',
-            style: _theme.textTheme.display1
-              .copyWith(color: _theme.errorColor)));
+            padding: EdgeInsets.all(AppSizes.sidePadding),
+            child: Text('An error occured',
+                style: _theme.textTheme.display1
+                    .copyWith(color: _theme.errorColor)));
       }
       return Container();
     }, child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
@@ -67,14 +69,14 @@ class _CartViewState extends State<CartView> {
               width: width,
               title: 'My Cart',
             ),
-            Column(children: buildCartItems(state.cartProducts, bloc)),
+            // Column(children: buildCartItems(state.cartProducts, bloc)),
+            Column(children: buildCartPartTimeTaskOne(state.collections, bloc)),
             Padding(
               padding: EdgeInsets.only(bottom: AppSizes.sidePadding * 3),
             ),
             OpenFlutterInputButton(
-              placeHolder:
-                state.appliedPromo != null ?
-                  state.appliedPromo.promoCode 
+              placeHolder: state.appliedPromo != null
+                  ? state.appliedPromo.promoCode
                   : 'Enter your promo code',
               controller: _promoController,
               width: width,
@@ -83,24 +85,25 @@ class _CartViewState extends State<CartView> {
             Padding(
               padding: EdgeInsets.only(bottom: AppSizes.sidePadding * 3),
             ),
-            state.appliedPromo != null ?
-              Column(
-                children: <Widget> [
-                  OpenFlutterSummaryLine(
-                    title: 'Subtotal:',
-                    summary: '\$' + state.totalPrice?.toStringAsFixed(2)),
-                  OpenFlutterSummaryLine(
-                    title: 'Discount percent:',
-                    summary: state.appliedPromo.discount.toStringAsFixed(0) + '%'),
-                  OpenFlutterSummaryLine(
-                    title: 'Total amount:',
-                    summary: '\$' + state.calculatedPrice?.toStringAsFixed(2)),
-                  ]
-                )  : 
-                OpenFlutterSummaryLine(
-                  title: 'Subtotal:',
-                  summary: '\$' + state.totalPrice?.toStringAsFixed(2)
-                ),
+            // state.appliedPromo != null ?
+            //   Column(
+            //     children: <Widget> [
+            //       OpenFlutterSummaryLine(
+            //         title: 'Subtotal:',
+            //         summary: '\$' + state.totalPrice?.toStringAsFixed(2)),
+            //       OpenFlutterSummaryLine(
+            //         title: 'Discount percent:',
+            //         summary: state.appliedPromo.discount.toStringAsFixed(0) + '%'),
+            //       OpenFlutterSummaryLine(
+            //         title: 'Total amount:',
+            //         summary: '\$' + state.calculatedPrice?.toStringAsFixed(2)),
+            //       ]
+            //     )  :
+            //     OpenFlutterSummaryLine(
+            //       title: 'Subtotal:',
+            //       summary: '\$ ${state.totalPrice?.toStringAsFixed(2)}'
+            //       // summary: '\$' + state.totalPrice?.toStringAsFixed(2)
+            //     ),
             Padding(
               padding: EdgeInsets.only(bottom: AppSizes.sidePadding * 3),
             ),
@@ -112,38 +115,88 @@ class _CartViewState extends State<CartView> {
               title: 'CHECK OUT',
             )
           ])),
-          state.showPromoPopup ? 
-            OpenFlutterBottomPopup(
-              title: '',
-              child: Column(
-                children: <Widget>[
-                  OpenFlutterInputButton(
-                    placeHolder: 'Enter your promo code',
-                    controller: _promoController,
-                    width: width,
-                    onClick: (() => {
-                        bloc
-                          ..add(CartPromoCodeAppliedEvent(
-                            //TODO: check that code is valid
-                            promoCode: _promoController.text))
-                      }),
-                  ),
-                  Padding(
-                    padding:
-                      EdgeInsets.only(bottom: AppSizes.sidePadding)),
-                  OpenFlutterBlockSubtitle(
-                    width: width,
-                    title: 'Your Promo Codes',
-                  ),
-                  Column(children: buildPromos(state.promos, bloc))
-                ],
-              ),
-            )
-            : Container()
+          // state.showPromoPopup ?
+          // OpenFlutterBottomPopup(
+          //   title: '',
+          //   child: Column(
+          //     children: <Widget>[
+          //       OpenFlutterInputButton(
+          //         placeHolder: 'Enter your promo code',
+          //         controller: _promoController,
+          //         width: width,
+          //         onClick: (() => {
+          //             bloc
+          //               ..add(CartPromoCodeAppliedEvent(
+          //                 //TODO: check that code is valid
+          //                 promoCode: _promoController.text))
+          //           }),
+          //       ),
+          //       Padding(
+          //         padding:
+          //           EdgeInsets.only(bottom: AppSizes.sidePadding)),
+          //       OpenFlutterBlockSubtitle(
+          //         width: width,
+          //         title: 'Your Promo Codes',
+          //       ),
+          //       Column(children: buildPromos(state.promos, bloc))
+          //     ],
+          //   ),
+          // )
+          // : Container()
         ]);
+      } else if (state is CartLoadingState) {
+        return Center(
+          child: Container(
+            width: 50,
+            height: 50,
+            child: LoadingView(),
+          ),
+        );
       }
-      return Container();
+      return Center(
+        child: Container(
+          width: 50,
+          height: 50,
+          child: LoadingView(),
+        ),
+      );
     }));
+  }
+
+  List<Widget> buildCartPartTimeTaskOne(List<Rs> collections, CartBloc bloc) {
+    List<Widget> _widgets = [];
+
+    if (collections != null) {
+      if (collections.isNotEmpty) {
+        for (int i = 0; i < collections.length; i++) {
+          _widgets.add(Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.sidePadding,
+                  vertical: AppSizes.sidePadding),
+              child: OpenFlutterCartTile(
+                item: collections[i],
+                onChangeQuantity: ((int quantity) => {
+                      bloc
+                        ..add(PartTimeQuantityChangedEvent(
+                            newQuantity: quantity, item: collections[i])),
+                      if (quantity < 1)
+                        {
+                          collections.remove(collections[i]),
+                        }
+                    }),
+                onAddToFav: () {
+                  // bloc
+                  //   ..add(PartTimeAddToFavsEvent(item: collections[i]));
+                },
+                onRemoveFromCart: () {
+                  bloc..add(PartTimeRemoveFromCartEvent(item: collections[i]));
+                  collections.remove(collections[i]);
+                },
+              )));
+        }
+      }
+    }
+    return _widgets;
   }
 
   List<Widget> buildPromos(List<Promo> promos, CartBloc bloc) {
@@ -165,31 +218,32 @@ class _CartViewState extends State<CartView> {
   List<Widget> buildCartItems(List<CartItem> items, CartBloc bloc) {
     var widgets = <Widget>[];
     if (items.isNotEmpty) {
-    for (var i = 0; i < items.length; i++) {
-      widgets.add(Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: AppSizes.sidePadding, vertical: AppSizes.sidePadding),
-          child: OpenFlutterCartTile(
-            item: items[i],
-            onChangeQuantity: ((int quantity) => {
-              bloc
-                ..add(CartQuantityChangedEvent(
-                  item: items[i], newQuantity: quantity)),
-              if(quantity < 1) {
-                items.remove(items[i]),
-              }
-            }),
-            onAddToFav: () {
-              bloc
-                ..add(CartAddToFavsEvent(item: items[i]));
-            },
-            onRemoveFromCart: () {
-              bloc
-                ..add(CartRemoveFromCartEvent(item: items[i]));
-              items.remove(items[i]);
-            },
-          )));
-    }}
+      for (var i = 0; i < items.length; i++) {
+        widgets.add(Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppSizes.sidePadding,
+                vertical: AppSizes.sidePadding),
+            child: OpenFlutterCartTile(
+              item: items[i],
+              onChangeQuantity: ((int quantity) => {
+                    bloc
+                      ..add(CartQuantityChangedEvent(
+                          item: items[i], newQuantity: quantity)),
+                    if (quantity < 1)
+                      {
+                        items.remove(items[i]),
+                      }
+                  }),
+              onAddToFav: () {
+                bloc..add(CartAddToFavsEvent(item: items[i]));
+              },
+              onRemoveFromCart: () {
+                bloc..add(CartRemoveFromCartEvent(item: items[i]));
+                items.remove(items[i]);
+              },
+            )));
+      }
+    }
     return widgets;
   }
 }

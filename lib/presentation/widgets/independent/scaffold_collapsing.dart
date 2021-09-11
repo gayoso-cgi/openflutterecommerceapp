@@ -28,8 +28,8 @@ class OpenFlutterCollapsingScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
+      // resizeToAvoidBottomPadding: false,
       body: NestedScrollView(
         physics: ScrollPhysics(parent: PageScrollPhysics()),
         headerSliverBuilder: title != null

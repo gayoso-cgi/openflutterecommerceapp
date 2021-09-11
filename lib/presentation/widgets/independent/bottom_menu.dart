@@ -41,7 +41,7 @@ class OpenFlutterBottomMenu extends StatelessWidget {
     List<BottomNavigationBarItem> menuItems =[
       getItem('assets/icons/bottom_menu/home.svg', 'Home', _theme, 0),
       getItem('assets/icons/bottom_menu/cart.svg', 'Shop', _theme, 1),
-      getItem('assets/icons/bottom_menu/bag.svg', 'Bag', _theme, 2),
+      getItem('assets/icons/bottom_menu/bag.svg', 'Cart', _theme, 2),
       getItem('assets/icons/bottom_menu/favorites.svg', 'Favorites',
           _theme, 3),
     ];

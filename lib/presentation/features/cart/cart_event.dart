@@ -5,6 +5,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:openflutterecommerce/data/model/cart_item.dart';
+import 'package:openflutterecommerce/data/model/part_time_data_model/part_time_model_task_one.dart';
 import 'package:openflutterecommerce/data/model/promo.dart';
 
 @immutable
@@ -32,11 +33,41 @@ class CartRemoveFromCartEvent extends CartEvent {
 }
 
 @immutable
+class PartTimeRemoveFromCartEvent extends CartEvent {
+  final Rs item;
+  PartTimeRemoveFromCartEvent({this.item});
+}
+
+@immutable
+class PartTimeQuantityChangedEvent extends CartEvent {
+  final List<Rs> collections;
+  final Rs item;
+  final int quantity;
+  final int newQuantity;
+
+  PartTimeQuantityChangedEvent(
+      {this.collections, this.item, this.quantity, this.newQuantity});
+}
+
+
+// @immutable
+// class CartPartTimeTaskOneAppliedEvent extends CartEvent {
+//   final List<Rs> collections;
+//   final Rs rs;
+//   final int quantity;
+//
+//   CartPartTimeTaskOneAppliedEvent(
+//       {this.collections, this.rs, this.quantity});
+// }
+
+@immutable
 class CartAddToFavsEvent extends CartEvent {
   final CartItem item;
 
   CartAddToFavsEvent({this.item});
 }
+
+
 
 @immutable
 class CartPromoAppliedEvent extends CartEvent {
@@ -51,6 +82,7 @@ class CartPromoCodeAppliedEvent extends CartEvent {
 
   CartPromoCodeAppliedEvent({this.promoCode});
 }
+
 
 @immutable
 class CartShowPopupEvent extends CartEvent {}

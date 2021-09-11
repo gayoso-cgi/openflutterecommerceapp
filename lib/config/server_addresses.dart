@@ -31,4 +31,8 @@ class ServerAddresses {
   static String get promos => serverAddress  +
     (useStatic ? _promosCached 
       : serverAddress  +_promoSuffix + _woocommerceKeys);
+
+
+  /// for may job progrress
+  static const endpointTaskOne = 'https://www.generasiterpilih.or.id/mobapps/flutter/p342_ecommerce_more_api_11.php';
 }

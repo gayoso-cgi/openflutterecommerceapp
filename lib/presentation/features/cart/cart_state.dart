@@ -5,6 +5,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:openflutterecommerce/data/model/cart_item.dart';
+import 'package:openflutterecommerce/data/model/part_time_data_model/part_time_model_task_one.dart';
 import 'package:openflutterecommerce/data/model/promo.dart';
 
 @immutable
@@ -14,10 +15,31 @@ abstract class CartState extends Equatable {
 }
 
 @immutable
-class CartInitialState extends CartState { }
+class CartInitialState extends CartState {}
 
 @immutable
-class CartLoadingState extends CartState { }
+class CartLoadingState extends CartState {}
+
+@immutable
+class PartTimeTaskOneLoadedState extends CartState {
+  final List<Rs> collections = [];
+
+  PartTimeTaskOneLoadedState({
+    List<Rs> collection,
+  }) {
+    this.collections.addAll(collection);
+  }
+
+  PartTimeTaskOneLoadedState copyWith({List<Rs> collect}) {
+    this.collections.addAll(collect ?? this.collections);
+    return PartTimeTaskOneLoadedState(
+      collection: this.collections
+    );
+  }
+
+  @override
+  List<Object> get props => [collections];
+}
 
 @immutable
 class CartLoadedState extends CartState {
@@ -27,23 +49,27 @@ class CartLoadedState extends CartState {
   final double totalPrice;
   final double calculatedPrice;
   final Promo appliedPromo;
+  final List<Rs> collections;
 
   CartLoadedState(
-    {@required this.showPromoPopup,
-    @required this.promos,
-    this.totalPrice,
-    this.calculatedPrice,
-    this.appliedPromo,
-    @required this.cartProducts});
+      {@required this.showPromoPopup,
+      @required this.promos,
+      this.totalPrice,
+      this.calculatedPrice,
+      this.appliedPromo,
+      this.collections,
+      @required this.cartProducts});
 
   CartLoadedState copyWith(
       {List<CartItem> cartProducts,
       double totalPrice,
       List<Promo> promos,
+      List<Rs> collections,
       Promo appliedPromo,
       double calculatedPrice,
       bool showPromoPopup}) {
     return CartLoadedState(
+        collections: collections ?? this.collections,
         promos: promos ?? this.promos,
         cartProducts: cartProducts ?? this.cartProducts,
         totalPrice: totalPrice ?? this.totalPrice,
@@ -53,7 +79,8 @@ class CartLoadedState extends CartState {
   }
 
   @override
-  List<Object> get props => [totalPrice, cartProducts, appliedPromo, showPromoPopup];
+  List<Object> get props =>
+      [totalPrice, cartProducts, appliedPromo, showPromoPopup];
 }
 
 @immutable

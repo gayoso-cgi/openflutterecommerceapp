@@ -11,28 +11,31 @@ class CartItem extends Equatable {
   final HashMap<ProductAttribute, String> selectedAttributes;
   final ProductQuantity productQuantity;
 
-  double get price => productQuantity.quantity * product.price;
+  double get price => product.price;
+  // double get price => productQuantity.quantity * product.price;
 
   CartItem({
     @required this.product,
-    @required this.productQuantity,
+    this.productQuantity,
     @required this.selectedAttributes,
   });
 
-  void changeQuantity(int quantity){
+  void changeQuantity(int quantity) {
     productQuantity.changeQuantity(quantity);
   }
 
   @override
-  List<Object> get props => [product, selectedAttributes, productQuantity.quantity];
+  List<Object> get props =>
+      [product, selectedAttributes, productQuantity.quantity];
 }
 
 class ProductQuantity {
   int quantity;
 
-  ProductQuantity(this.quantity);
+  ProductQuantity._(this.quantity);
+  factory ProductQuantity(int quantity)=>ProductQuantity._(quantity);
 
-  void changeQuantity(int newQuantity){
+  void changeQuantity(int newQuantity) {
     quantity = newQuantity;
   }
 }

@@ -4,13 +4,20 @@
  * @see cart_repository_impl.dart
  */
 
+import 'dart:convert';
+
+import 'package:openflutterecommerce/config/server_addresses.dart';
+import 'package:openflutterecommerce/data/model/part_time_data_model/part_time_model_task_one.dart';
+import 'package:openflutterecommerce/data/network/network_request.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/cart_repository.dart';
 import 'package:openflutterecommerce/data/model/cart_item.dart';
 import 'package:openflutterecommerce/data/model/product.dart';
 import 'package:openflutterecommerce/data/model/product_attribute.dart';
 import 'package:openflutterecommerce/data/model/promo.dart';
 
-class CartRepositoryImpl extends CartRepository{
+
+class CartRepositoryImpl extends CartRepository {
+
   static CartProductDataStorage cartProductDataStorage 
     = CartProductDataStorage();
 
@@ -67,6 +74,7 @@ class CartRepositoryImpl extends CartRepository{
         : totalPrice;
     return calculatedTotalPrice;
   }
+
 
 }
 

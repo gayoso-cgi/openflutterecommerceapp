@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:openflutterecommerce/data/repositories/abstract/cart_repository.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/category_repository.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/favorites_repository.dart';
+import 'package:openflutterecommerce/data/repositories/abstract/part_time_task_one_repository.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/payment_method_repository.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/product_repository.dart';
 import 'package:openflutterecommerce/data/repositories/abstract/promo_repository.dart';
@@ -28,10 +29,13 @@ import 'package:openflutterecommerce/domain/usecases/checkout/checkout_start_use
 import 'package:openflutterecommerce/domain/usecases/favorites/add_to_favorites_use_case.dart';
 import 'package:openflutterecommerce/domain/usecases/favorites/get_favorite_products_use_case.dart';
 import 'package:openflutterecommerce/domain/usecases/favorites/remove_from_favorites_use_case.dart';
+import 'package:openflutterecommerce/domain/usecases/part_time_usecase/get_part_time_usecase.dart';
 import 'package:openflutterecommerce/domain/usecases/products/find_products_by_filter_use_case.dart';
 import 'package:openflutterecommerce/domain/usecases/products/get_home_products_use_case.dart';
 import 'package:openflutterecommerce/domain/usecases/products/get_product_by_id_use_case.dart';
 import 'package:openflutterecommerce/domain/usecases/promos/get_promos_use_case.dart';
+
+import 'data/repositories/part_time_repository_impl.dart';
 
 final sl = GetIt.instance;
 
@@ -120,5 +124,17 @@ void init() {
 
   sl.registerLazySingleton<PaymentMethodRepository>(
     () => PaymentMethodRepositoryImpl(PaymentMethodDataStorage([]))
-  );  
+  );
+
+  // PartTimeTaskOne
+  sl.registerLazySingleton<GetPartTimeTaskOneUseCase>(
+          () => GetPartTimeTaskOneUseCaseImpl()
+  );
+  sl.registerLazySingleton<PartTimeTaskOneRepository>(
+          () => PatTimeTaskOneRepositoryImpls()
+  );
+  sl.registerLazySingleton<PartTimeTaskOneResult>(
+          () => PartTimeTaskOneResult(collections: [])
+  );
+
 }
